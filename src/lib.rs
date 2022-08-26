@@ -1,10 +1,8 @@
-#![feature(decl_macro)]
-
 //!  Macro for generating enums associated with values.
 
 /// Macro for generating enums associated with values.
 /// 
-/// Examples
+/// # Examples
 /// 
 /// ```
 /// use value_enum::value_enum;
@@ -22,34 +20,37 @@
 /// assert_eq!(char::from(Abc::A), 'a');
 /// assert_eq!(Abc::try_from('b'), Ok(Abc::B));
 /// ```
-pub macro value_enum(
-    $type:ty =>
-    $(#[$attr:meta])*
-    $vis:vis enum $name:ident {
-        $($variant:ident = $value:literal),*
-        $(,)?
-    }
-) {
-    $(#[$attr])*
-    $vis enum $name {
-        $($variant,)*
-    }
+#[macro_export]
+macro_rules! value_enum {
+    (
+        $type:ty =>
+        $(#[$attr:meta])*
+        $vis:vis enum $name:ident {
+            $($variant:ident = $value:literal),*
+            $(,)?
+        }
+    ) => {
+        $(#[$attr])*
+        $vis enum $name {
+            $($variant,)*
+        }
 
-    impl From<$name> for $type {
-        fn from(val: $name) -> Self {
-            match val {
-                $($name::$variant => $value,)*
+        impl From<$name> for $type {
+            fn from(val: $name) -> Self {
+                match val {
+                    $($name::$variant => $value,)*
+                }
             }
         }
-    }
 
-    impl TryFrom<$type> for $name {
-        type Error = $type;
+        impl TryFrom<$type> for $name {
+            type Error = $type;
 
-        fn try_from(val: $type) -> Result<Self, Self::Error> {
-            match val {
-                $($value => Ok($name::$variant),)*
-                _ => Err(val),
+            fn try_from(val: $type) -> Result<Self, Self::Error> {
+                match val {
+                    $($value => Ok($name::$variant),)*
+                    _ => Err(val),
+                }
             }
         }
     }
