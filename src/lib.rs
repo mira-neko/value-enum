@@ -44,12 +44,12 @@ pub macro value_enum(
     }
 
     impl TryFrom<$type> for $name {
-        type Error = ();
+        type Error = $type;
 
         fn try_from(val: $type) -> Result<Self, Self::Error> {
             match val {
                 $($value => Ok($name::$variant),)*
-                _ => Err(()),
+                _ => Err(val),
             }
         }
     }
@@ -70,7 +70,7 @@ mod tests {
     );
 
     value_enum!(
-        &str =>
+        &'static str =>
         #[derive(Clone, Copy, PartialEq, Eq, Debug)]
         enum Str {
             Test = "test",
@@ -86,6 +86,7 @@ mod tests {
         assert_eq!(Abc::try_from('b'), Ok(Abc::B));
         assert_eq!(char::from(Abc::C), 'c');
         assert_eq!(Abc::try_from('c'), Ok(Abc::C));
+        assert_eq!(Abc::try_from('d'), Err('d'));
     }
 
     #[test]
@@ -94,5 +95,6 @@ mod tests {
         assert_eq!(Str::try_from("test"), Ok(Str::Test));
         assert_eq!(<&str>::from(Str::Nya), "nya");
         assert_eq!(Str::try_from("nya"), Ok(Str::Nya));
+        assert_eq!(Str::try_from("wtf"), Err("wtf"));
     }
 }
