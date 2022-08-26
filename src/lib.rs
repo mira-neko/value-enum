@@ -26,7 +26,7 @@ pub macro value_enum(
     $type:ty =>
     $(#[$attr:meta])*
     $vis:vis enum $name:ident {
-        $($variant:ident = $value:literal),*
+        $($variant:ident = $value:expr),*
         $(,)?
     }
 ) {
