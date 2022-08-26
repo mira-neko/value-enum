@@ -1,4 +1,4 @@
-//!  Macro for generating enums associated with values.
+//! Macro for generating enums associated with values.
 
 /// Macro for generating enums associated with values.
 /// 
