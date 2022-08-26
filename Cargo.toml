@@ -1,9 +1,10 @@
 [package]
 name = "value-enum"
-version = "0.5.1"
+version = "0.5.2"
 edition = "2021"
 description = "Macro for generating enums associated with values"
 authors = ["Мира Лущаева <miralushch@gmail.com>"]
 license = "MIT"
+repository = "https://github.com/miralushch/value-enum"
 
 [dependencies]
