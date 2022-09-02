@@ -1,16 +1,33 @@
 //! Macro for generating enums associated with values.
+//! 
+//! # Example
+//! 
+//! ```
+//! use value_enum::value_enum;
+//! 
+//! value_enum!(
+//!     #[derive(Clone, Copy, PartialEq, Eq, Debug)]
+//!     enum Abc: char {
+//!         A = 'a',
+//!         B = 'b',
+//!         C = 'c',
+//!     }
+//! );
+//! 
+//! assert_eq!(char::from(Abc::A), 'a');
+//! assert_eq!(Abc::try_from('b'), Ok(Abc::B));
+//! ```
 
 /// Macro for generating enums associated with values.
 /// 
-/// # Examples
+/// # Example
 /// 
 /// ```
 /// use value_enum::value_enum;
 /// 
 /// value_enum!(
-///     char =>
 ///     #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-///     enum Abc {
+///     enum Abc: char {
 ///         A = 'a',
 ///         B = 'b',
 ///         C = 'c',
@@ -23,10 +40,9 @@
 #[macro_export]
 macro_rules! value_enum {
     (
-        $type:ty =>
         $(#[$attr:meta])*
-        $vis:vis enum $name:ident {
-            $($variant:ident = $value:literal),*
+        $vis:vis enum $name:ident: $type:ty {
+            $($variant:ident = $value:expr),*
             $(,)?
         }
     ) => {
@@ -46,9 +62,13 @@ macro_rules! value_enum {
         impl TryFrom<$type> for $name {
             type Error = $type;
 
+            #[allow(non_upper_case_globals)]
             fn try_from(val: $type) -> Result<Self, Self::Error> {
+                $(
+                    const $variant: $type = $value;
+                )*
                 match val {
-                    $($value => Ok($name::$variant),)*
+                    $($variant => Ok($name::$variant),)*
                     _ => Err(val),
                 }
             }
@@ -61,9 +81,8 @@ mod tests {
     use super::*;
 
     value_enum!(
-        char =>
         #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-        enum Abc {
+        enum Abc: char {
             A = 'a',
             B = 'b',
             C = 'c',
@@ -71,11 +90,10 @@ mod tests {
     );
 
     value_enum!(
-        &'static str =>
         #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-        enum Str {
-            Test = "test",
-            Nya = "nya",
+        enum Str: (&'static str, &'static str) {
+            Test = ("test", "qwerty"),
+            Nya = ("nya", "nyan"),
         }
     );
 
@@ -92,10 +110,10 @@ mod tests {
 
     #[test]
     fn test_str() {
-        assert_eq!(<&str>::from(Str::Test), "test");
-        assert_eq!(Str::try_from("test"), Ok(Str::Test));
-        assert_eq!(<&str>::from(Str::Nya), "nya");
-        assert_eq!(Str::try_from("nya"), Ok(Str::Nya));
-        assert_eq!(Str::try_from("wtf"), Err("wtf"));
+        assert_eq!(<(&str, &str)>::from(Str::Test), ("test", "qwerty"));
+        assert_eq!(Str::try_from(("test", "qwerty")), Ok(Str::Test));
+        assert_eq!(<(&str, &str)>::from(Str::Nya), ("nya", "nyan"));
+        assert_eq!(Str::try_from(("nya", "nyan")), Ok(Str::Nya));
+        assert_eq!(Str::try_from(("wtf", "wtf")), Err(("wtf", "wtf")));
     }
 }

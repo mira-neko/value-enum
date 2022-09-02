@@ -8,9 +8,8 @@ Macro for generating enums associated with values.
 use value_enum::value_enum;
 
 value_enum!(
-  char =>
   #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-  enum Abc {
+  enum Abc: char {
     A = 'a',
     B = 'b',
     C = 'c',
