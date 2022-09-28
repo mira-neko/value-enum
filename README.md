@@ -1,4 +1,4 @@
-# value-enum [![](https://img.shields.io/crates/v/value-enum.svg)](https://crates.io/crates/value-enum)
+# value-enum [![](https://img.shields.io/crates/v/value-enum.svg)](https://crates.io/crates/value-enum) [![docs.rs](https://img.shields.io/docsrs/value-enum)](https://docs.rs/value-enum) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/miralushch/value-enum) ![Crates.io](https://img.shields.io/crates/d/value-enum) ![Crates.io](https://img.shields.io/crates/l/value-enum)
 
 Macro for generating enums associated with values.
 
