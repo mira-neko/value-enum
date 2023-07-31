@@ -20,6 +20,7 @@ assert_eq!(
   char::from(Abc::A),
   'a'
 );
+
 assert_eq!(
   Abc::try_from('b'),
   Ok(Abc::B)
